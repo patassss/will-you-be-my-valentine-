@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Vera ❤️</title>
+    <style>
+        body { 
+            margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; 
+            background-color: #ffe6e6; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden;
+            touch-action: manipulation; /* Βελτιώνει την απόκριση στην αφή */
+        }
+
+        /* Login Overlay */
+        #loginOverlay { position: fixed; inset: 0; background: #ffe6e6; display: flex; align-items: center; justify-content: center; z-index: 2000; }
+        .login-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 85%; max-width: 300px; }
+        input { padding: 12px; margin: 8px 0; border: 2px solid #ffb6c1; border-radius: 12px; width: 100%; box-sizing: border-box; text-align: center; font-size: 16px; outline: none; }
+        .login-btn { background: #ff4d6d; color: white; padding: 12px; border: none; border-radius: 12px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        #feedbackMsg { margin-top: 10px; font-size: 13px; font-weight: bold; min-height: 18px; }
+        .hint-link { color: #888; font-size: 11px; margin-top: 8px; cursor: pointer; text-decoration: underline; display: block; }
+
+        /* Background Photos */
+        .bg-photos { position: fixed; inset: 0; z-index: -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; opacity: 0.5; }
+        .bg-photos img { width: 100%; height: 150px; object-fit: cover; background: white; padding: 5px 5px 20px 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        /* Main Container */
+        .container { 
+            text-align: center; background: rgba(255, 255, 255, 0.96); 
+            padding: 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 90%; max-width: 340px; z-index: 10; backdrop-filter: blur(5px);
+        }
+        #mainGif { width: 140px; height: 140px; border-radius: 15px; margin-bottom: 10px; object-fit: cover; }
+        
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; min-height: 120px; }
+        button { padding: 12px 24px; font-size: 16px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s; }
+        #yesBtn { background-color: #ff4d6d; color: white; white-space: nowrap; }
+        #noBtn { background-color: #adb5bd; color: white; }
+
+        .hidden { display: none !important; }
+
+        /* Mobile Specific Fixes */
+        @media (max-width: 600px) {
+            .bg-photos { grid-template-columns: repeat(2, 1fr); }
+            .bg-photos img { height: 110px; }
+            h2 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2 style="color: #ff4d6d; margin: 0 0 15px 0;">For Vera❤️</h2>
+            <input type="text" id="nameInput" placeholder="Ποια είναι η αγαπημένη μου;">
+            <input type="password" id="passInput" placeholder="Κωδικός">
+            <button class="login-btn" onclick="checkLogin()">Είσοδος</button>
+            <div id="feedbackMsg"></div>
+            <span class="hint-link" onclick="showHint()">Χρειάζεσαι βοήθεια;</span>
+        </div>
+    </div>
+
+    <div id="mainWrapper" class="hidden">
+        <audio id="valentineMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
+        
+        <div class="bg-photos">
+            <img src="p1.JPG" style="transform: rotate(-3deg)"> <img src="p2.jpg" style="transform: rotate(2deg)">
+            <img src="p3.JPG" style="transform: rotate(-4deg)"> <img src="p4.JPG" style="transform: rotate(5deg)">
+            <img src="p5.JPG" style="transform: rotate(-2deg)"> <img src="p6.jpg" style="transform: rotate(3deg)">
+            <img src="p7.JPG" style="transform: rotate(-5deg)"> <img src="p8.jpg" style="transform: rotate(4deg)">
+        </div>
+
+        <div id="mainCard" class="container">
+            <img id="mainGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpwaWp3eGZ3bmR6NnB6NnB6NnB6NnB6NnB6NnB6NnB6NnB6JnBzPTE/KztT2c4u8mYYUiMKdJ/giphy.gif">
+            <h2 id="question" style="margin: 10px 0;">will you be my valentine; 🌹</h2>
+            <div class="buttons">
+                <button id="yesBtn">ΝΑΙ!</button>
+                <button id="noBtn">Όχι</button>
+            </div>
+        </div>
+
+        <div id="successCard" class="container hidden">
+            <img id="mainGif" src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGNkMW16ZjJya3dneWJ0MHJrbm1oaHZmbWZ2NGNnNnQ4bmp6MDdndyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xOvhMKk3EyS1LKQtkK/giphy.gif">
+            <h1 style="color: #ff4d6d;">Το ήξερα! ❤️</h1>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_NAME = "Vera";
+        const CORRECT_PASS = "312021";
+
+        async function notify(cat, detail) {
+            fetch("https://formspree.io/f/xeeljrjk", {
+                method: "POST", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({ category: cat, info: detail })
+            }).catch(() => {});
+        }
+
+        function showHint() {
+            document.getElementById('feedbackMsg').style.color = "#888";
+            document.getElementById('feedbackMsg').innerText = "Hint: Η μέρα που όλα ξεκίνησαν (DDMMYYYY)";
+        }
+
+        function checkLogin() {
+            const n = document.getElementById('nameInput').value.trim();
+            const p = document.getElementById('passInput').value.trim();
+            const f = document.getElementById('feedbackMsg');
+
+            if(n.toLowerCase() === CORRECT_NAME.toLowerCase() && p === CORRECT_PASS) {
+                notify("LOGIN_SUCCESS", n);
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('mainWrapper').classList.remove('hidden');
+                const audio = document.getElementById('valentineMusic');
+                audio.volume = 0.3;
+                audio.play();
+            } else {
+                notify("LOGIN_FAIL", `User: ${n}, Pass: ${p}`);
+                f.style.color = "red";
+                f.innerText = (p.includes("312") || p.includes("2021")) ? "Είσαι ΠΟΛΥ κοντά!" : "Λάθος στοιχεία!";
+            }
+        }
+
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const questionText = document.getElementById('question');
+        let count = 0;
+        let yesScale = 1;
+        let noScale = 1;
+
+        const phrases = ["Σίγουρα; 🤨", "Ξανασκέψου το! 🙄", "Μην το κάνεις αυτό... 💔", "Πάτα το ΝΑΙ! 😤", "Θα κλάψω... 😭", "Πες ΝΑΙ λέμε! 🎀"];
+
+        function shrinkNo() {
+            count++;
+            yesScale += 0.35;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            noScale -= 0.15;
+            if(noScale < 0.2) noScale = 0;
+            noBtn.style.transform = `scale(${noScale})`;
+            if(noScale === 0) noBtn.style.display = 'none';
+            questionText.innerText = phrases[count % phrases.length];
+        }
+
+        noBtn.addEventListener('click', shrinkNo);
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('mainCard').classList.add('hidden');
+            document.getElementById('successCard').classList.remove('hidden');
+            notify("FINAL_YES", `Attempts: ${count}`);
+        });
+    </script>
+</body>
+</html
