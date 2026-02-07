@@ -51,7 +51,7 @@
     <div id="loginOverlay">
         <div class="login-box">
             <h2 style="color: #ff4d6d; margin: 0 0 15px 0;">For Vera❤️</h2>
-            <input type="text" id="nameInput" placeholder="Ποια είναι η αγαπημένη μου;">
+            <input type="text" id="nameInput" placeholder="Όνομα χρήστη">
             <input type="password" id="passInput" placeholder="Κωδικός">
             <button class="login-btn" onclick="checkLogin()">Είσοδος</button>
             <div id="feedbackMsg"></div>
@@ -97,7 +97,7 @@
 
         function showHint() {
             document.getElementById('feedbackMsg').style.color = "#888";
-            document.getElementById('feedbackMsg').innerText = "Hint: Η μέρα που όλα ξεκίνησαν (DDMMYYYY)";
+            document.getElementById('feedbackMsg').innerText = "Hint: Η μέρα που όλα ξεκίνησαν (DMYYYY)";
         }
 
         function checkLogin() {
@@ -149,3 +149,4 @@
 </body>
 
 </html
+
